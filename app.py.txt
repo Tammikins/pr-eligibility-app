@@ -1,0 +1,33 @@
+from flask import Flask, render_template, request
+
+app = Flask(name)
+
+def check_eligibility(data): eligibility = []
+
+kotlin
+Copy
+Edit
+if (
+    data['work_experience_canada'] >= 1 and
+    data['language_score'] >= 7 and
+    18 <= data['age'] <= 45 and
+    data['education_level'].lower() in ['bachelor', 'master', 'phd']
+):
+    eligibility.append("Express Entry (CEC or FSW)")
+
+if data['provincial_nomination'] == 'Yes' or data['job_offer'] == 'Yes':
+    eligibility.append("Provincial Nominee Program (PNP)")
+
+if not eligibility:
+    eligibility.append("No eligible PR programs found based on current data.")
+
+return eligibility
+@app.route("/", methods=["GET", "POST"]) def home(): if request.method == "POST": try: client_data = { 'work_experience_canada': int(request.form['work_experience_canada']), 'language_score': float(request.form['language_score']), 'age': int(request.form['age']), 'education_level': request.form['education_level'], 'job_offer': request.form['job_offer'], 'provincial_nomination': request.form['provincial_nomination'] } results = check_eligibility(client_data) except Exception as e: results = [f"Error: {str(e)}"]
+
+kotlin
+Copy
+Edit
+    return render_template("index.html", eligibility=results)
+
+return render_template("index.html", eligibility=None)
+if name == 'main': app.run(debug=True)
